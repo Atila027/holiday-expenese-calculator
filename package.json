@@ -1,0 +1,22 @@
+{
+  "name": "holiday-expenses-calculator",
+  "version": "1.0.0",
+  "description": "application to keep a track of expenses and who owes money to who at the end of the trip.",
+  "main": "index.js",
+  "scripts": {
+    "install-all": "npm install --prefix ./api & npm install --prefix ./web",
+    "start": "npm run start --prefix  ./api & npm run start --prefix ./web",
+    "test": "npm test --prefix ./api & npm test --prefix ./web",
+    "e2e": "npm run e2e --prefix ./web"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rentbunk/bunk-dev-test.git"
+  },
+  "author": "tomas atila",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rentbunk/bunk-dev-test/issues"
+  },
+  "homepage": "https://github.com/rentbunk/bunk-dev-test#readme"
+}

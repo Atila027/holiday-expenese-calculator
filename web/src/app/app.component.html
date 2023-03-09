@@ -1,0 +1,127 @@
+<div class="container d-flex h-100 p-3 mx-auto flex-column">
+  <header class="mb-auto">
+    <div class="inner">
+      <h1 class="text-center">Holiday Expenses Calculator</h1>
+    </div>
+  </header>
+
+  <!-- Results section -->
+  <main role="main" class="inner cover calculate-box" *ngIf="calculated">
+    <h2>Total Expenses: {{ summary['total'] | currency }}</h2>
+    <h3>An equal share of the expenses is {{ summary['equalShare'] | currency }}.</h3>
+    <div style="margin-top: 12px;">
+      <p *ngFor="let payout of summary['payouts']">
+        {{ payout['owes'] }} owes {{ payout['owed'] }} {{ payout['amount'] | currency }}.
+      </p>
+    </div>
+    <div style="margin-top: 12px;" *ngIf="summary['payouts'].length < 1">
+      <p>
+        Nobody owes anyone anything... all settled!
+      </p>
+    </div>
+    <div class="row">
+      <div class="col-md-6 col-sm-12">
+        <p class="lead">
+          <button
+            style="width: 95%"
+            type="button"
+            (click)="goBack()"
+            class="btn btn-lg btn-secondary">
+            Go Back
+          </button>
+        </p>
+      </div>
+      <div class="col-md-6 col-sm-12">
+        <p class="lead">
+          <button
+            style="width: 95%"
+            type="button"
+            (click)="reset()"
+            class="btn btn-lg btn-dark">
+            Start New
+          </button>
+        </p>
+      </div>
+    </div>
+  </main>
+  <!-- END: Results section -->
+
+  <!-- Expenses Form section -->
+  <main role="main" class="inner cover calculate-box" *ngIf="!calculated">
+    <ngb-alert type="danger" *ngIf="errorMessage" (close)="errorMessage = ''">{{ errorMessage }}</ngb-alert>
+    <h1 class="cover-heading">Calculate Expenses</h1>
+    <p class="lead">Add expenses and calculate who owes what <b>instantly</b>.</p>
+    <form [formGroup]="dynamicForm" (ngSubmit)="onSubmit()">
+      <div *ngFor="let expense of e.controls; let i = index" class="list-group list-group-flush">
+        <div class="list-group-item" style="background: transparent; padding: 0;">
+          <div [formGroup]="expense" class="form-row">
+            <div class="form-group col-5">
+              <label>Name</label>
+              <input
+                type="text"
+                formControlName="name"
+                class="form-control"
+                [ngClass]="{ 'is-invalid': expense['controls'].name.errors }" />
+              <div *ngIf="expense['controls'].name.errors" class="invalid-feedback">
+                <div *ngIf="expense['controls'].name.errors.required">Name is required</div>
+              </div>
+            </div>
+            <div class="form-group col-5">
+              <label>Expense(s)</label>
+              <input
+                type="text"
+                min="0.01"
+                step="0.01"
+                formControlName="amount"
+                class="form-control"
+                [ngClass]="{ 'is-invalid': expense['controls'].amount.errors }"
+                (change)="onChangeAmount($event, i)" />
+              <div *ngIf="expense['controls'].amount.errors" class="invalid-feedback">
+                <div *ngIf="expense['controls'].amount.errors.required">Amount is required</div>
+              </div>
+            </div>
+            <div class="form-group col-2">
+              <label>Remove</label>
+              <button
+                style="height: calc(1.5em + .75rem + 2px);"
+                role="button"
+                (click)="removeExpense(i)"
+                class="btn btn-sm btn-secondary">Remove
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 col-sm-12">
+          <p class="lead">
+            <button
+              style="width: 95%"
+              type="button"
+              (click)="addExpense()"
+              class="btn btn-lg btn-secondary">
+              Add Expenses
+            </button>
+          </p>
+        </div>
+        <div class="col-md-6 col-sm-12">
+          <p class="lead">
+            <button
+              [disabled]="responsePending || !dynamicForm.valid || e.length < 2"
+              style="width: 95%"
+              type="submit"
+              class="btn btn-lg btn-dark">
+              Settle up {{ pendingAmount | currency }}
+            </button>
+          </p>
+        </div>
+      </div>
+    </form>
+  </main>
+  <!-- END: Expenses Form section -->
+  <footer class="mastfoot mt-auto">
+    <div class="inner">
+      <p>Copyright@ Tomas Atila</p>
+    </div>
+  </footer>
+</div>
